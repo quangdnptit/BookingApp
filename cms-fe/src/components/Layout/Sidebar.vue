@@ -9,20 +9,12 @@
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
-        custom
-        v-slot="{ isActive, navigate }"
+        :end="item.to === '/'"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-zinc-400 hover:bg-cinema-border hover:text-zinc-200"
+        active-class="!bg-cinema-gold/15 !text-cinema-gold"
       >
-        <a
-          href="#"
-          :class="[
-            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-            isActive ? 'bg-cinema-gold/15 text-cinema-gold' : 'text-zinc-400 hover:bg-cinema-border hover:text-zinc-200',
-          ]"
-          @click.prevent="navigate"
-        >
-          <span class="text-lg">{{ item.icon }}</span>
-          {{ item.label }}
-        </a>
+        <span class="text-lg">{{ item.icon }}</span>
+        {{ item.label }}
       </router-link>
     </nav>
     <div class="p-3 border-t border-cinema-border space-y-2">

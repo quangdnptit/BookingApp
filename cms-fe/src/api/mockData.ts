@@ -1,4 +1,4 @@
-import type { Movie, Theater, Showtime, Seat } from '../types';
+import type { Movie, Theater, Showtime, Seat } from '../types'
 
 function generateSeatsForScreen(
   screenId: string,
@@ -8,11 +8,11 @@ function generateSeatsForScreen(
 ): Seat[] {
   const rowsList = Array.from({ length: rows }, (_, i) =>
     String.fromCharCode(65 + i)
-  );
-  const out: Seat[] = [];
-  let id = 1;
+  )
+  const out: Seat[] = []
+  let id = 1
   rowsList.forEach((row, rowIndex) => {
-    const isPremium = premiumRows.includes(rowIndex);
+    const isPremium = premiumRows.includes(rowIndex)
     for (let num = 1; num <= seatsPerRow; num++) {
       out.push({
         id: `seat-${screenId}-${id}`,
@@ -21,11 +21,11 @@ function generateSeatsForScreen(
         seatNumber: num,
         type: isPremium ? 'premium' : 'standard',
         isActive: true,
-      });
-      id++;
+      })
+      id++
     }
-  });
-  return out;
+  })
+  return out
 }
 
 export const mockSeats: Seat[] = [
@@ -34,7 +34,7 @@ export const mockSeats: Seat[] = [
   ...generateSeatsForScreen('s3', 6, 10),
   ...generateSeatsForScreen('s4', 12, 18, [10, 11]),
   ...generateSeatsForScreen('s5', 10, 15, [8]),
-];
+]
 
 export const mockMovies: Movie[] = [
   {
@@ -73,7 +73,7 @@ export const mockMovies: Movie[] = [
     isActive: true,
     createdAt: '2024-01-17T10:00:00Z',
   },
-];
+]
 
 export const mockTheaters: Theater[] = [
   {
@@ -99,7 +99,7 @@ export const mockTheaters: Theater[] = [
     ],
     isActive: true,
   },
-];
+]
 
 export const mockShowtimes: Showtime[] = [
   {
@@ -135,4 +135,4 @@ export const mockShowtimes: Showtime[] = [
     currency: 'USD',
     isActive: true,
   },
-];
+]

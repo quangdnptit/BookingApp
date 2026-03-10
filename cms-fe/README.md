@@ -4,16 +4,18 @@ Content Management System frontend for a movie booking application. Dark cinema-
 
 ## Stack
 
-- **Vite** + **React 19** + **TypeScript**
-- **React Router** for navigation
+- **Vite** + **Vue 3** + **TypeScript**
+- **Vue Router** for navigation
 - **Tailwind CSS** for styling
 
 ## Features
 
+- **Login** — Sign in to access the CMS (demo: `admin@reel.com` / `password`). Session is stored in `localStorage`.
 - **Dashboard** — Overview stats (movies, theaters, showtimes, bookings) and quick actions
 - **Movies** — List, add, edit, delete movies (title, description, duration, rating, genre, poster, release date)
 - **Showtimes** — View and delete scheduled showtimes (movie, theater/screen, start/end, price)
 - **Theaters** — View theaters and screens (read-only with mock data)
+- **Seats** — Manage seats per screen (add, edit type, deactivate, delete)
 
 Data is currently **mock** (in-memory). Replace `src/api/client.ts` with real HTTP calls to your backend.
 
@@ -37,8 +39,10 @@ npm run preview   # serve production build
 
 ```
 src/
-  api/          # API client + mock data
-  components/   # Layout (Sidebar), UI (Button, Card, Input, Table, Select)
-  pages/        # Dashboard, Movies (list/form), Showtimes, Theaters
-  types/        # Movie, Theater, Screen, Showtime, DashboardStats
+  api/          # API client + mock data (including mock login)
+  components/   # Layout (Sidebar), UI (Button, Card, CardHeader, Input, Table, Select)
+  composables/  # useAuth (user, login, logout)
+  router/       # Vue Router + auth guard
+  types/        # Movie, Theater, Screen, Showtime, Seat, DashboardStats, User
+  views/        # Login, Dashboard, Movies (list/form), Showtimes, Theaters, Seats
 ```

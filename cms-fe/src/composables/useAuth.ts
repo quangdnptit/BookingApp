@@ -1,6 +1,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { User } from '../types'
 import { api } from '../api/client'
+import { setAuthToken } from '../api/http'
 
 const AUTH_KEY = 'reel-cms-auth'
 
@@ -16,6 +17,7 @@ function loadStored() {
     if (u && t) {
       user.value = u
       token.value = t
+      setAuthToken(t)
     }
   } catch {
     // ignore

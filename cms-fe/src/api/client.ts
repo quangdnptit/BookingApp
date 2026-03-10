@@ -1,147 +1,321 @@
 import type { Movie, Theater, Showtime, Seat, DashboardStats, User, LoginCredentials } from '../types'
-import { mockMovies, mockTheaters, mockShowtimes, mockSeats } from './mockData'
+import { http, setAuthToken } from './http'
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms))
+// Backend DTOs (match OpenAPI schema)
+interface LoginResponse {
+  token: string
+  id: string
+  email: string
+  fullName: string
+  role?: string
+}
 
-/** Mock: accepts admin@reel.com / password. Replace with real auth API. */
-export const api = {
-  async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
-    await delay(500)
-    if (credentials.email === 'admin@reel.com' && credentials.password === 'password') {
-      return {
-        user: { id: '1', email: credentials.email, name: 'CMS Admin' },
-        token: 'mock-jwt-' + Date.now(),
+interface BackendMovie {
+  id: string
+  title: string
+  description: string
+  durationMinutes: number
+  genre: string
+  ageRating: string
+  posterUrl: string
+  createdAt: string
+}
+
+interface BackendRoom {
+  id: string
+  name: string
+  totalSeats: number
+  createdAt?: string
+}
+
+interface BackendTheater {
+  id: string
+  name: string
+  location: string
+  createdAt?: string
+  rooms?: BackendRoom[]
+}
+
+interface BackendShowtime {
+  id: string
+  startTime: string
+  endTime: string
+  basePrice: number
+  createdAt?: string
+  movieId?: string
+  roomId?: string
+}
+
+interface BackendSeat {
+  id: string
+  seatRow: string
+  seatNumber: number
+  seatType: string
+  createdAt?: string
+  roomId?: string
+}
+
+function mapMovie(b: BackendMovie): Movie {
+  return {
+    id: b.id,
+    title: b.title,
+    description: b.description ?? '',
+    durationMinutes: b.durationMinutes,
+    rating: b.ageRating ?? 'PG-13',
+    genre: b.genre ?? '',
+    posterUrl: b.posterUrl ?? '',
+    releaseDate: '',
+    isActive: true,
+    createdAt: b.createdAt ?? '',
+  }
+}
+
+function mapTheater(b: BackendTheater): Theater {
+  const rooms = b.rooms ?? []
+  return {
+    id: b.id,
+    name: b.name,
+    address: b.location ?? '',
+    screenCount: rooms.length,
+    screens: rooms.map((r) => ({
+      id: r.id,
+      name: r.name,
+      capacity: r.totalSeats ?? 0,
+      theaterId: b.id,
+    })),
+    isActive: true,
+  }
+}
+
+function mapShowtime(b: BackendShowtime, movies?: Movie[], theaters?: Theater[]): Showtime {
+  const screenId = b.roomId ?? ''
+  const movieId = b.movieId ?? ''
+  let screen: Theater['screens'][0] | undefined
+  let theater: Theater | undefined
+  if (theaters) {
+    for (const t of theaters) {
+      screen = t.screens.find((s) => s.id === screenId)
+      if (screen) {
+        theater = t
+        break
       }
     }
-    throw new Error('Invalid email or password')
+  }
+  return {
+    id: b.id,
+    movieId,
+    screenId,
+    theaterId: theater?.id ?? '',
+    startTime: b.startTime,
+    endTime: b.endTime,
+    price: b.basePrice ?? 0,
+    currency: 'USD',
+    isActive: true,
+    movie: movies?.find((m) => m.id === movieId),
+    screen,
+    theater,
+  }
+}
+
+function mapSeat(
+  b: BackendSeat,
+  screen?: { id: string; name: string; capacity: number; theaterId: string },
+  fallbackScreenId?: string
+): Seat {
+  return {
+    id: b.id,
+    screenId: b.roomId ?? fallbackScreenId ?? '',
+    row: b.seatRow ?? '',
+    seatNumber: b.seatNumber ?? 0,
+    type: (b.seatType as Seat['type']) ?? 'standard',
+    isActive: true,
+    screen,
+  }
+}
+
+export const api = {
+  async login(credentials: LoginCredentials): Promise<{ user: User; token: string }> {
+    const res = await http.post<LoginResponse>('/api/auth/login', {
+      email: credentials.email,
+      password: credentials.password,
+    })
+    setAuthToken(res.token)
+    return {
+      user: { id: res.id, email: res.email, name: res.fullName ?? res.email },
+      token: res.token,
+    }
   },
 
   async logout(): Promise<void> {
-    await delay(200)
+    setAuthToken(null)
   },
 
   async getDashboardStats(): Promise<DashboardStats> {
-    await delay(400)
+    const [movies, theaters, showtimes, seats] = await Promise.all([
+      http.get<BackendMovie[]>('/api/movies'),
+      http.get<BackendTheater[]>('/api/theaters'),
+      http.get<BackendShowtime[]>('/api/showtimes'),
+      http.get<BackendSeat[]>('/api/seats'),
+    ])
     return {
-      totalMovies: mockMovies.length,
-      totalTheaters: mockTheaters.length,
-      totalShowtimes: mockShowtimes.length,
-      totalBookings: 1247,
-      totalSeats: mockSeats.length,
+      totalMovies: Array.isArray(movies) ? movies.length : 0,
+      totalTheaters: Array.isArray(theaters) ? theaters.length : 0,
+      totalShowtimes: Array.isArray(showtimes) ? showtimes.length : 0,
+      totalBookings: 0,
+      totalSeats: Array.isArray(seats) ? seats.length : 0,
     }
   },
 
   async getMovies(): Promise<Movie[]> {
-    await delay(300)
-    return [...mockMovies]
+    const list = await http.get<BackendMovie[]>('/api/movies')
+    return (Array.isArray(list) ? list : []).map(mapMovie)
   },
 
   async getMovie(id: string): Promise<Movie | null> {
-    await delay(200)
-    return mockMovies.find((m) => m.id === id) ?? null
+    try {
+      const b = await http.get<BackendMovie>(`/api/movies/${id}`)
+      return mapMovie(b)
+    } catch {
+      return null
+    }
   },
 
   async createMovie(movie: Omit<Movie, 'id' | 'createdAt'>): Promise<Movie> {
-    await delay(400)
-    const newMovie: Movie = {
-      ...movie,
-      id: String(Date.now()),
-      createdAt: new Date().toISOString(),
-    }
-    mockMovies.push(newMovie)
-    return newMovie
+    const b = await http.post<BackendMovie>('/api/movies', {
+      title: movie.title,
+      description: movie.description,
+      durationMinutes: movie.durationMinutes,
+      genre: movie.genre,
+      ageRating: movie.rating,
+      posterUrl: movie.posterUrl ?? '',
+    })
+    return mapMovie(b)
   },
 
   async updateMovie(id: string, data: Partial<Movie>): Promise<Movie | null> {
-    await delay(400)
-    const i = mockMovies.findIndex((m) => m.id === id)
-    if (i === -1) return null
-    mockMovies[i] = { ...mockMovies[i], ...data }
-    return mockMovies[i]
+    try {
+      const existing = await this.getMovie(id)
+      if (!existing) return null
+      const merged = { ...existing, ...data }
+      const b = await http.put<BackendMovie>(`/api/movies/${id}`, {
+        title: merged.title,
+        description: merged.description,
+        durationMinutes: merged.durationMinutes,
+        genre: merged.genre,
+        ageRating: merged.rating,
+        posterUrl: merged.posterUrl ?? '',
+      })
+      return mapMovie(b)
+    } catch {
+      return null
+    }
   },
 
   async deleteMovie(id: string): Promise<boolean> {
-    await delay(300)
-    const i = mockMovies.findIndex((m) => m.id === id)
-    if (i === -1) return false
-    mockMovies.splice(i, 1)
-    return true
+    try {
+      await http.delete(`/api/movies/${id}`)
+      return true
+    } catch {
+      return false
+    }
   },
 
   async getTheaters(): Promise<Theater[]> {
-    await delay(300)
-    return JSON.parse(JSON.stringify(mockTheaters))
+    const list = await http.get<BackendTheater[]>('/api/theaters')
+    const theaters = Array.isArray(list) ? list : []
+    const result: Theater[] = []
+    for (const t of theaters) {
+      if (t.id) {
+        try {
+          const rooms = await http.get<BackendRoom[]>(`/api/rooms/theater/${t.id}`)
+          result.push(mapTheater({ ...t, rooms: Array.isArray(rooms) ? rooms : [] }))
+        } catch {
+          result.push(mapTheater(t))
+        }
+      } else {
+        result.push(mapTheater(t))
+      }
+    }
+    return result
   },
 
   async getShowtimes(): Promise<Showtime[]> {
-    await delay(300)
-    return mockShowtimes.map((s) => ({
-      ...s,
-      movie: mockMovies.find((m) => m.id === s.movieId),
-      screen: mockTheaters.flatMap((t) => t.screens).find((sc) => sc.id === s.screenId),
-      theater: mockTheaters.find((t) => t.id === s.theaterId),
-    }))
+    const [list, movies, theaters] = await Promise.all([
+      http.get<BackendShowtime[]>('/api/showtimes'),
+      this.getMovies(),
+      this.getTheaters(),
+    ])
+    const showtimes = Array.isArray(list) ? list : []
+    return showtimes.map((s) => mapShowtime(s, movies, theaters))
   },
 
   async createShowtime(data: Omit<Showtime, 'id'>): Promise<Showtime> {
-    await delay(400)
-    const newShowtime: Showtime = { ...data, id: 'sh' + Date.now() }
-    mockShowtimes.push(newShowtime)
-    return newShowtime
+    const b = await http.post<BackendShowtime>('/api/showtimes', {
+      movieId: data.movieId,
+      roomId: data.screenId,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      basePrice: data.price,
+    })
+    return mapShowtime(b)
   },
 
   async deleteShowtime(id: string): Promise<boolean> {
-    await delay(300)
-    const i = mockShowtimes.findIndex((s) => s.id === id)
-    if (i === -1) return false
-    mockShowtimes.splice(i, 1)
-    return true
+    try {
+      await http.delete(`/api/showtimes/${id}`)
+      return true
+    } catch {
+      return false
+    }
   },
 
   async getSeats(): Promise<Seat[]> {
-    await delay(300)
-    return mockSeats.map((s) => ({
-      ...s,
-      screen: mockTheaters.flatMap((t) => t.screens).find((sc) => sc.id === s.screenId),
-    }))
+    const list = await http.get<BackendSeat[]>('/api/seats')
+    const seats = Array.isArray(list) ? list : []
+    const theaters = await this.getTheaters()
+    const allScreens = theaters.flatMap((t) => t.screens)
+    return seats.map((s) => mapSeat(s, allScreens.find((sc) => sc.id === (s.roomId ?? ''))))
   },
 
   async getSeatsByScreen(screenId: string): Promise<Seat[]> {
-    await delay(300)
-    return mockSeats
-      .filter((s) => s.screenId === screenId)
-      .map((s) => ({
-        ...s,
-        screen: mockTheaters.flatMap((t) => t.screens).find((sc) => sc.id === s.screenId),
-      }))
+    const list = await http.get<BackendSeat[]>(`/api/seats/room/${screenId}`)
+    const seats = Array.isArray(list) ? list : []
+    const theaters = await this.getTheaters()
+    const screen = theaters.flatMap((t) => t.screens).find((s) => s.id === screenId)
+    return seats
+      .map((s) => mapSeat(s, screen, screenId))
       .sort((a, b) => a.row.localeCompare(b.row) || a.seatNumber - b.seatNumber)
   },
 
   async createSeat(data: Omit<Seat, 'id'>): Promise<Seat> {
-    await delay(400)
-    const newSeat: Seat = { ...data, id: `seat-${Date.now()}` }
-    mockSeats.push(newSeat)
-    const screen = mockTheaters.flatMap((t) => t.screens).find((sc) => sc.id === data.screenId)
-    if (screen) screen.capacity = mockSeats.filter((s) => s.screenId === data.screenId).length
-    return { ...newSeat, screen }
+    const b = await http.post<BackendSeat>('/api/seats', {
+      roomId: data.screenId,
+      seatRow: data.row,
+      seatNumber: data.seatNumber,
+      seatType: data.type,
+    })
+    return mapSeat(b)
   },
 
   async updateSeat(id: string, data: Partial<Seat>): Promise<Seat | null> {
-    await delay(400)
-    const i = mockSeats.findIndex((s) => s.id === id)
-    if (i === -1) return null
-    mockSeats[i] = { ...mockSeats[i], ...data }
-    return mockSeats[i]
+    try {
+      const b = await http.put<BackendSeat>(`/api/seats/${id}`, {
+        seatRow: data.row,
+        seatNumber: data.seatNumber,
+        seatType: data.type,
+      })
+      return mapSeat(b)
+    } catch {
+      return null
+    }
   },
 
   async deleteSeat(id: string): Promise<boolean> {
-    await delay(300)
-    const seat = mockSeats.find((s) => s.id === id)
-    if (!seat) return false
-    const i = mockSeats.findIndex((s) => s.id === id)
-    mockSeats.splice(i, 1)
-    const screen = mockTheaters.flatMap((t) => t.screens).find((sc) => sc.id === seat.screenId)
-    if (screen) screen.capacity = mockSeats.filter((s) => s.screenId === seat.screenId).length
-    return true
+    try {
+      await http.delete(`/api/seats/${id}`)
+      return true
+    } catch {
+      return false
+    }
   },
 }

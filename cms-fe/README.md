@@ -14,12 +14,15 @@ Content Management System frontend for a movie booking application. Dark cinema-
 - **Dashboard** — Overview stats (movies, theaters, showtimes, bookings) and quick actions
 - **Movies** — List, add, edit, delete movies (title, description, duration, rating, genre, poster, release date)
 - **Showtimes** — View and delete scheduled showtimes (movie, theater/screen, start/end, price)
-- **Theaters** — View theaters and screens (read-only with mock data)
-- **Seats** — Manage seats per screen (add, edit type, deactivate, delete)
+- **Theaters** — View theaters and screens (read-only)
+- **Seats** — Manage seats per room (add, edit type, delete)
 
-Data is currently **mock** (in-memory). Replace `src/api/client.ts` with real HTTP calls to your backend.
+The app talks to your backend API. Set the base URL via env (see below).
 
 ## Run
+
+1. Copy `.env.example` to `.env` and set `VITE_API_BASE_URL` if needed (default: `http://localhost:8080`).
+2. Ensure the backend is running (e.g. Swagger at [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)).
 
 ```bash
 npm install
@@ -39,7 +42,7 @@ npm run preview   # serve production build
 
 ```
 src/
-  api/          # API client + mock data (including mock login)
+  api/          # HTTP client + API client (auth, movies, theaters, showtimes, seats)
   components/   # Layout (Sidebar), UI (Button, Card, CardHeader, Input, Table, Select)
   composables/  # useAuth (user, login, logout)
   router/       # Vue Router + auth guard

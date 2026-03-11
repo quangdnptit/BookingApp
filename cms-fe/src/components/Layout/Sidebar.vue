@@ -1,7 +1,7 @@
 <template>
   <aside class="w-56 min-h-screen bg-cinema-panel border-r border-cinema-border flex flex-col">
     <div class="p-6 border-b border-cinema-border">
-      <h1 class="font-display font-bold text-xl text-cinema-gold">Reel CMS</h1>
+      <h1 class="font-display font-bold text-xl text-cinema-gold">Movie CMS</h1>
       <p class="text-cinema-muted text-sm mt-0.5">Movie Booking</p>
     </div>
     <nav class="flex-1 p-3 space-y-1">

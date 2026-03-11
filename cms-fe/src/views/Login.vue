@@ -5,7 +5,7 @@
   <div v-else class="min-h-screen flex items-center justify-center bg-cinema-dark px-4">
     <div class="w-full max-w-sm">
       <div class="text-center mb-8">
-        <h1 class="font-display font-bold text-3xl text-cinema-gold">Reel CMS</h1>
+        <h1 class="font-display font-bold text-3xl text-cinema-gold">Movie CMS</h1>
         <p class="text-cinema-muted mt-1">Movie Booking — Sign in</p>
       </div>
       <form

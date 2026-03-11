@@ -27,7 +27,7 @@ export interface Screen {
   theaterId: string
 }
 
-export type SeatType = 'standard' | 'premium' | 'wheelchair'
+export type SeatType = 'STANDARD' | 'PREMIUM' | 'WHEELCHAIR'
 
 export interface Seat {
   id: string

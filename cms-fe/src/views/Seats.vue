@@ -94,9 +94,9 @@
               </div>
             </div>
             <div class="flex gap-4 mt-4 text-xs text-cinema-muted">
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-zinc-600" /> Standard</span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-cinema-gold/80" /> Premium</span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-sky-600" /> Wheelchair</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-zinc-600" /> STANDARD</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-cinema-gold/80" /> PREMIUM</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-sky-600" /> WHELLCHAIR</span>
             </div>
           </div>
         </Card>
@@ -195,15 +195,15 @@ import Input from '../components/ui/Input.vue'
 import Select from '../components/ui/Select.vue'
 
 const SEAT_TYPE_OPTIONS = [
-  { value: 'standard', label: 'Standard' },
-  { value: 'premium', label: 'Premium' },
-  { value: 'wheelchair', label: 'Wheelchair' },
+  { value: 'STANDARD', label: 'Standard' },
+  { value: 'PREMIUM', label: 'Premium' },
+  { value: 'WHEELCHAIR', label: 'Wheelchair' },
 ]
 
 const SEAT_TYPE_STYLE: Record<Seat['type'], string> = {
-  standard: 'bg-zinc-600 hover:bg-zinc-500',
-  premium: 'bg-cinema-gold/80 text-cinema-dark hover:bg-cinema-gold',
-  wheelchair: 'bg-sky-600 hover:bg-sky-500',
+  STANDARD: 'bg-zinc-600 hover:bg-zinc-500',
+  PREMIUM: 'bg-cinema-gold/80 text-cinema-dark hover:bg-cinema-gold',
+  WHEELCHAIR: 'bg-sky-600 hover:bg-sky-500',
 }
 
 const theaters = ref<Theater[]>([])
@@ -212,7 +212,7 @@ const seats = ref<Seat[]>([])
 const loading = ref(true)
 const seatsLoading = ref(false)
 const editingId = ref<string | null>(null)
-const form = reactive({ row: 'A', seatNumber: 1, type: 'standard' as Seat['type'], isActive: true })
+const form = reactive({ row: 'A', seatNumber: 1, type: 'STANDARD' as Seat['type'], isActive: true })
 const saving = ref(false)
 
 const screens = computed(() =>

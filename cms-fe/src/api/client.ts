@@ -1,4 +1,4 @@
-import type { Movie, Theater, Showtime, Seat, DashboardStats, User, LoginCredentials } from '../types'
+import type { Movie, Theater, Showtime, Seat, DashboardStats, User, LoginCredentials, Screen } from '../types'
 import { http, setAuthToken } from './http'
 
 // Backend DTOs (match OpenAPI schema)
@@ -237,6 +237,73 @@ export const api = {
       }
     }
     return result
+  },
+
+  async createTheater(data: { name: string; address: string }): Promise<Theater> {
+    const b = await http.post<BackendTheater>('/api/theaters', {
+      name: data.name,
+      location: data.address,
+    })
+    return mapTheater(b)
+  },
+
+  async updateTheater(id: string, data: { name?: string; address?: string }): Promise<Theater | null> {
+    try {
+      const existing = await http.get<BackendTheater>(`/api/theaters/${id}`)
+      const b = await http.put<BackendTheater>(`/api/theaters/${id}`, {
+        name: data.name ?? existing.name,
+        location: data.address ?? existing.location,
+      })
+      return mapTheater(b)
+    } catch {
+      return null
+    }
+  },
+
+  async deleteTheater(id: string): Promise<boolean> {
+    try {
+      await http.delete(`/api/theaters/${id}`)
+      return true
+    } catch {
+      return false
+    }
+  },
+
+  async createRoom(theaterId: string, data: { name: string; totalRows: number; seatsPerRow: number }): Promise<Screen> {
+    const b = await http.post<BackendRoom>('/api/rooms', {
+      theaterId,
+      name: data.name,
+      totalRows: data.totalRows,
+      seatsPerRow: data.seatsPerRow,
+    })
+    return {
+      id: b.id,
+      name: b.name,
+      capacity: b.totalSeats ?? 0,
+      theaterId,
+    }
+  },
+
+  async updateRoom(id: string, data: { name?: string; totalSeats?: number; theaterId?: string }): Promise<Screen | null> {
+    try {
+      const existing = await http.get<BackendRoom>(`/api/rooms/${id}`)
+      const b = await http.put<BackendRoom>(`/api/rooms/${id}`, {
+        name: data.name ?? existing.name,
+        totalSeats: data.totalSeats ?? existing.totalSeats,
+      })
+      return { id: b.id, name: b.name, capacity: b.totalSeats ?? 0, theaterId: data.theaterId ?? '' }
+    } catch {
+      return null
+    }
+  },
+
+  async deleteRoom(id: string): Promise<boolean> {
+    try {
+      await http.delete(`/api/rooms/${id}`)
+      return true
+    } catch {
+      return false
+    }
   },
 
   async getShowtimes(): Promise<Showtime[]> {

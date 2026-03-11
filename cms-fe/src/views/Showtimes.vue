@@ -9,12 +9,12 @@
     </div>
 
     <!-- Add showtime form -->
-    <Card v-if="showForm" class="mb-6">
+    <Card v-if="showForm && !editingShowtimeId" class="mb-6">
       <CardHeader title="New showtime" subtitle="Schedule a movie in a room" />
       <form class="space-y-4" @submit.prevent="handleCreateShowtime">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Movie</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Movie</label>
             <select
               v-model="form.movieId"
               required
@@ -25,7 +25,7 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Room</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Room</label>
             <select
               v-model="form.screenId"
               required
@@ -42,21 +42,74 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Start date & time</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Start date & time</label>
             <Input v-model="form.startTime" type="datetime-local" required />
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">End date & time</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">End date & time</label>
             <Input v-model="form.endTime" type="datetime-local" required />
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Price</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Base price</label>
             <Input v-model.number="form.price" type="number" min="0" step="0.01" required />
           </div>
         </div>
         <div class="flex gap-3">
           <Button type="submit" :loading="saving">Create showtime</Button>
           <Button type="button" variant="secondary" @click="showForm = false">Cancel</Button>
+        </div>
+      </form>
+    </Card>
+
+    <!-- Edit showtime form -->
+    <Card v-if="editingShowtimeId" class="mb-6">
+      <CardHeader title="Edit showtime" subtitle="Update schedule" />
+      <form class="space-y-4" @submit.prevent="handleSaveShowtimeEdit">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Movie</label>
+            <select
+              v-model="editForm.movieId"
+              required
+              class="w-full px-3 py-2 rounded-lg bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
+            >
+              <option value="">Select movie</option>
+              <option v-for="m in movies" :key="m.id" :value="m.id">{{ m.title }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Room</label>
+            <select
+              v-model="editForm.screenId"
+              required
+              class="w-full px-3 py-2 rounded-lg bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
+            >
+              <option value="">Select room</option>
+              <optgroup v-for="t in theaters" :key="t.id" :label="t.name">
+                <option v-for="s in t.screens" :key="s.id" :value="s.id">
+                  {{ s.name }} ({{ s.capacity }} seats)
+                </option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Start date & time</label>
+            <Input v-model="editForm.startTime" type="datetime-local" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">End date & time</label>
+            <Input v-model="editForm.endTime" type="datetime-local" required />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Base price</label>
+            <Input v-model.number="editForm.price" type="number" min="0" step="0.01" required />
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <Button type="submit" :loading="savingEdit">Save changes</Button>
+          <Button type="button" variant="secondary" @click="editingShowtimeId = null">Cancel</Button>
         </div>
       </form>
     </Card>
@@ -73,7 +126,7 @@
                 <th class="px-4 py-3 font-medium">Theater / Room</th>
                 <th class="px-4 py-3 font-medium">Start</th>
                 <th class="px-4 py-3 font-medium">End</th>
-                <th class="px-4 py-3 font-medium">Price</th>
+                <th class="px-4 py-3 font-medium">Base Price</th>
                 <th class="px-4 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
@@ -93,7 +146,10 @@
                 <td class="px-4 py-3">{{ formatDateTime(s.endTime) }}</td>
                 <td class="px-4 py-3">{{ s.currency }} {{ s.price.toFixed(2) }}</td>
                 <td class="px-4 py-3 text-right">
-                  <button type="button" class="text-red-400 hover:underline" @click="handleDelete(s.id)">
+                  <button type="button" class="text-cinema-gold hover:underline mr-3" @click="openEditShowtime(s)">
+                    Edit
+                  </button>
+                  <button type="button" class="text-red-600 hover:underline" @click="handleDelete(s.id)">
                     Delete
                   </button>
                 </td>
@@ -128,6 +184,8 @@ const theaters = ref<Theater[]>([])
 const loading = ref(true)
 const showForm = ref(false)
 const saving = ref(false)
+const editingShowtimeId = ref<string | null>(null)
+const savingEdit = ref(false)
 
 const form = reactive({
   movieId: '',
@@ -136,6 +194,21 @@ const form = reactive({
   endTime: '',
   price: 0,
 })
+
+const editForm = reactive({
+  movieId: '',
+  screenId: '',
+  startTime: '',
+  endTime: '',
+  price: 0,
+})
+
+function toDatetimeLocal(iso: string): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
 
 async function load() {
   const [showtimesList, moviesList, theatersList] = await Promise.all([
@@ -175,6 +248,36 @@ async function handleCreateShowtime() {
     await load()
   } finally {
     saving.value = false
+  }
+}
+
+function openEditShowtime(s: Showtime) {
+  editingShowtimeId.value = s.id
+  editForm.movieId = s.movieId
+  editForm.screenId = s.screenId
+  editForm.startTime = toDatetimeLocal(s.startTime)
+  editForm.endTime = toDatetimeLocal(s.endTime)
+  editForm.price = s.price
+  showForm.value = false
+}
+
+async function handleSaveShowtimeEdit() {
+  if (!editingShowtimeId.value) return
+  savingEdit.value = true
+  try {
+    const updated = await api.updateShowtime(editingShowtimeId.value, {
+      movieId: editForm.movieId,
+      screenId: editForm.screenId,
+      startTime: editForm.startTime ? new Date(editForm.startTime).toISOString() : undefined,
+      endTime: editForm.endTime ? new Date(editForm.endTime).toISOString() : undefined,
+      price: editForm.price,
+    })
+    if (updated) {
+      editingShowtimeId.value = null
+      await load()
+    }
+  } finally {
+    savingEdit.value = false
   }
 }
 

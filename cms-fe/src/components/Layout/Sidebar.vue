@@ -9,9 +9,10 @@
         v-for="item in navItems"
         :key="item.to"
         :to="item.to"
-        :end="item.to === '/'"
+        :exact="item.to === '/'"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:bg-cinema-surface hover:text-gray-900"
-        active-class="!bg-cinema-gold/15 !text-cinema-gold"
+        :active-class="item.to === '/' ? undefined : '!bg-cinema-gold/15 !text-cinema-gold'"
+        :exactActiveClass="item.to === '/' ? '!bg-cinema-gold/15 !text-cinema-gold' : undefined"
       >
         <span class="text-lg">{{ item.icon }}</span>
         {{ item.label }}
@@ -33,9 +34,9 @@ import Button from '../ui/Button.vue'
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: '📊' },
+  { to: '/theaters', label: 'Theaters', icon: '🏛️' },
   { to: '/movies', label: 'Movies', icon: '🎬' },
   { to: '/showtimes', label: 'Showtimes', icon: '🕐' },
-  { to: '/theaters', label: 'Theaters', icon: '🏛️' },
   { to: '/seats', label: 'Seats', icon: '💺' },
 ]
 

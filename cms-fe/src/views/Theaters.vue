@@ -9,20 +9,39 @@
     </div>
 
     <!-- Add theater form -->
-    <Card v-if="showTheaterForm" class="mb-6">
+    <Card v-if="showTheaterForm && !editingTheaterId" class="mb-6">
       <CardHeader title="New theater" subtitle="Create a new theater" />
       <form class="space-y-4" @submit.prevent="handleCreateTheater">
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Name</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
           <Input v-model="theaterForm.name" placeholder="Theater name" required />
         </div>
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Address / Location</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Address / Location</label>
           <Input v-model="theaterForm.address" placeholder="Address or location" required />
         </div>
         <div class="flex gap-3">
           <Button type="submit" :loading="savingTheater">Create theater</Button>
           <Button type="button" variant="secondary" @click="showTheaterForm = false">Cancel</Button>
+        </div>
+      </form>
+    </Card>
+
+    <!-- Edit theater form -->
+    <Card v-if="editingTheaterId" class="mb-6">
+      <CardHeader title="Edit theater" subtitle="Update theater details" />
+      <form class="space-y-4" @submit.prevent="handleSaveTheaterEdit">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <Input v-model="theaterEditForm.name" placeholder="Theater name" required />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Address / Location</label>
+          <Input v-model="theaterEditForm.address" placeholder="Address or location" required />
+        </div>
+        <div class="flex gap-3">
+          <Button type="submit" :loading="savingTheaterEdit">Save changes</Button>
+          <Button type="button" variant="secondary" @click="editingTheaterId = null">Cancel</Button>
         </div>
       </form>
     </Card>
@@ -61,16 +80,24 @@
                     </span>
                   </td>
                   <td class="px-4 py-3 text-right">
+          
                     <button
                       type="button"
-                      class="text-cinema-gold hover:underline mr-3"
+                      class="text-green-600 hover:underline mr-3"
                       @click="openAddRoom(t)"
                     >
                       Add room
                     </button>
+                            <button
+                      type="button"
+                      class="text-cinema-gold hover:underline mr-3"
+                      @click="openEditTheater(t)"
+                    >
+                      Edit
+                    </button>
                     <button
                       type="button"
-                      class="text-red-400 hover:underline"
+                      class="text-red-600 hover:underline"
                       @click="handleDeleteTheater(t.id, t.name)"
                     >
                       Delete
@@ -147,6 +174,10 @@ const showTheaterForm = ref(false)
 const savingTheater = ref(false)
 const theaterForm = reactive({ name: '', address: '' })
 
+const editingTheaterId = ref<string | null>(null)
+const savingTheaterEdit = ref(false)
+const theaterEditForm = reactive({ name: '', address: '' })
+
 const addingRoomFor = ref<Theater | null>(null)
 const savingRoom = ref(false)
 const roomForm = reactive({ name: '', totalRow: 10, seatsPerRow: 20 })
@@ -173,7 +204,36 @@ async function handleCreateTheater() {
   }
 }
 
+function openEditTheater(theater: Theater) {
+  editingTheaterId.value = theater.id
+  theaterEditForm.name = theater.name
+  theaterEditForm.address = theater.address
+  addingRoomFor.value = null
+}
+
+async function handleSaveTheaterEdit() {
+  if (!editingTheaterId.value) return
+  savingTheaterEdit.value = true
+  try {
+    const updated = await api.updateTheater(editingTheaterId.value, {
+      name: theaterEditForm.name,
+      address: theaterEditForm.address,
+    })
+    if (updated) {
+      editingTheaterId.value = null
+      await loadTheaters()
+    }
+  } finally {
+    savingTheaterEdit.value = false
+  }
+}
+
 function openAddRoom(theater: Theater) {
+  addingRoomFor.value = theater
+  roomForm.name = ''
+  roomForm.totalRow = 10
+  roomForm.seatsPerRow = 20
+  editingTheaterId.value = null
   addingRoomFor.value = theater
   roomForm.name = ''
   roomForm.totalRow = 10

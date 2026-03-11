@@ -327,6 +327,29 @@ export const api = {
     return mapShowtime(b)
   },
 
+  async updateShowtime(
+    id: string,
+    data: { movieId?: string; screenId?: string; startTime?: string; endTime?: string; price?: number }
+  ): Promise<Showtime | null> {
+    try {
+      const [existing, movies, theaters] = await Promise.all([
+        http.get<BackendShowtime>(`/api/showtimes/${id}`),
+        this.getMovies(),
+        this.getTheaters(),
+      ])
+      const b = await http.put<BackendShowtime>(`/api/showtimes/${id}`, {
+        movieId: data.movieId ?? existing.movieId,
+        roomId: data.screenId ?? existing.roomId,
+        startTime: data.startTime ?? existing.startTime,
+        endTime: data.endTime ?? existing.endTime,
+        basePrice: data.price ?? existing.basePrice,
+      })
+      return mapShowtime(b, movies, theaters)
+    } catch {
+      return null
+    }
+  },
+
   async deleteShowtime(id: string): Promise<boolean> {
     try {
       await http.delete(`/api/showtimes/${id}`)

@@ -54,10 +54,6 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">Poster URL</label>
           <Input v-model="form.posterUrl" placeholder="https://..." />
         </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Release date</label>
-          <Input v-model="form.releaseDate" type="date" />
-        </div>
         <div class="flex items-center gap-2">
           <input
             id="isActive"
@@ -99,7 +95,6 @@ const form = reactive<Omit<Movie, 'id' | 'createdAt'>>({
   rating: 'PG-13',
   genre: '',
   posterUrl: '',
-  releaseDate: '',
   isActive: true,
 })
 const loading = ref(false)
@@ -116,7 +111,6 @@ onMounted(async () => {
       form.rating = movie.rating
       form.genre = movie.genre
       form.posterUrl = movie.posterUrl
-      form.releaseDate = movie.releaseDate
       form.isActive = movie.isActive
     }
     loading.value = false

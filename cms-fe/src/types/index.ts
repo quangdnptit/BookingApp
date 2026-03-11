@@ -6,7 +6,6 @@ export interface Movie {
   rating: string
   genre: string
   posterUrl: string
-  releaseDate: string
   isActive: boolean
   createdAt: string
 }

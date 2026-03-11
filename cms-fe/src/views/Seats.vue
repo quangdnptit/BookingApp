@@ -15,43 +15,12 @@
         >
           <option value="">Select a screen</option>
           <option v-for="{ screen, theater } in screens" :key="screen.id" :value="screen.id">
-            {{ theater.name }} — {{ screen.name }} ({{ screen.capacity }} seats)
+           {{ theater.name }} - {{ screen.name }} - {{ screen.capacity }} seats
           </option>
         </select>
       </Card>
 
       <template v-if="screenId">
-        <Card class="mb-6">
-          <CardHeader
-            title="Add seat"
-            :subtitle="`Add a new seat to ${selectedScreen?.screen.name ?? 'this screen'}`"
-          />
-          <form class="flex flex-wrap items-end gap-4" @submit.prevent="handleAddSeat">
-            <div class="w-24">
-              <label class="block text-xs text-cinema-muted mb-1">Row</label>
-              <Input v-model="form.row" placeholder="A" maxlength="2" />
-            </div>
-            <div class="w-24">
-              <label class="block text-xs text-cinema-muted mb-1">Number</label>
-              <Input v-model.number="form.seatNumber" type="number" min="1" />
-            </div>
-            <div class="w-36">
-              <label class="block text-xs text-cinema-muted mb-1">Type</label>
-              <Select v-model="form.type" :options="SEAT_TYPE_OPTIONS" />
-            </div>
-            <div class="flex items-center gap-2">
-              <input
-                id="newActive"
-                v-model="form.isActive"
-                type="checkbox"
-                class="rounded border-cinema-border text-cinema-gold focus:ring-cinema-gold"
-              />
-              <label for="newActive" class="text-sm text-gray-700">Active</label>
-            </div>
-            <Button type="submit" :loading="saving">Add seat</Button>
-          </form>
-        </Card>
-
         <Card class="mb-6">
           <CardHeader title="Seat layout" :subtitle="`${seats.length} seat(s)`" />
           <div v-if="seatsLoading" class="py-8 text-center text-cinema-muted">Loading seats...</div>
@@ -102,7 +71,7 @@
         </Card>
 
         <Card>
-          <CardHeader title="All seats (table)" subtitle="Edit type or deactivate" />
+          <CardHeader title="All seats (table)" subtitle="Edit seat type or remove seat" />
           <div v-if="seatsLoading" class="py-8 text-center text-cinema-muted">Loading...</div>
           <template v-else>
             <div class="overflow-x-auto rounded-lg border border-cinema-border">
@@ -111,8 +80,7 @@
                   <tr>
                     <th class="px-4 py-3 font-medium">Row</th>
                     <th class="px-4 py-3 font-medium">Number</th>
-                    <th class="px-4 py-3 font-medium">Type</th>
-                    <th class="px-4 py-3 font-medium">Status</th>
+                    <th class="px-4 py-3 font-medium">Type</th>                  
                     <th class="px-4 py-3 font-medium text-right">Actions</th>
                   </tr>
                 </thead>
@@ -140,24 +108,7 @@
                         {{ seat.type }}
                       </span>
                     </td>
-                    <td class="px-4 py-3">
-                      <input
-                        v-if="editingId === seat.id"
-                        type="checkbox"
-                        :checked="seat.isActive"
-                        class="rounded border-cinema-border text-cinema-gold focus:ring-cinema-gold"
-                        @change="handleUpdateSeat(seat.id, { isActive: ($event.target as HTMLInputElement).checked })"
-                      />
-                      <span
-                        v-else
-                        :class="[
-                          'inline-flex px-2 py-0.5 rounded text-xs',
-                          seat.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600',
-                        ]"
-                      >
-                        {{ seat.isActive ? 'Active' : 'Inactive' }}
-                      </span>
-                    </td>
+
                     <td class="px-4 py-3 text-right">
                       <template v-if="editingId === seat.id">
                         <button type="button" class="text-cinema-muted hover:text-gray-700 text-sm" @click="editingId = null">
@@ -190,8 +141,6 @@ import type { Seat, Theater } from '../types'
 import { api } from '../api/client'
 import Card from '../components/ui/Card.vue'
 import CardHeader from '../components/ui/CardHeader.vue'
-import Button from '../components/ui/Button.vue'
-import Input from '../components/ui/Input.vue'
 import Select from '../components/ui/Select.vue'
 
 const SEAT_TYPE_OPTIONS = [

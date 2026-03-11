@@ -8,7 +8,6 @@
     v-bind="$attrs"
     @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)"
   >
-    <option value="">Select...</option>
     <option v-for="opt in options" :key="opt.value" :value="opt.value">
       {{ opt.label }}
     </option>

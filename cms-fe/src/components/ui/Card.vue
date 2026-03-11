@@ -1,5 +1,5 @@
 <template>
-  <div :class="['bg-cinema-panel border border-cinema-border rounded-xl p-6', $attrs.class]">
+  <div :class="['bg-cinema-panel border border-cinema-border rounded-xl p-6 shadow-sm', $attrs.class]">
     <slot />
   </div>
 </template>

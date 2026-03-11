@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-56 min-h-screen bg-cinema-panel border-r border-cinema-border flex flex-col">
+  <aside class="w-56 min-h-screen bg-cinema-panel border-r border-cinema-border flex flex-col shadow-sm">
     <div class="p-6 border-b border-cinema-border">
       <h1 class="font-display font-bold text-xl text-cinema-gold">Movie CMS</h1>
       <p class="text-cinema-muted text-sm mt-0.5">Movie Booking</p>
@@ -10,7 +10,7 @@
         :key="item.to"
         :to="item.to"
         :end="item.to === '/'"
-        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-zinc-400 hover:bg-cinema-border hover:text-zinc-200"
+        class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-gray-600 hover:bg-cinema-surface hover:text-gray-900"
         active-class="!bg-cinema-gold/15 !text-cinema-gold"
       >
         <span class="text-lg">{{ item.icon }}</span>

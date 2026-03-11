@@ -7,7 +7,7 @@
 @layer base {
   body {
     margin: 0;
-    @apply min-h-screen font-sans bg-cinema-dark text-zinc-200;
+    @apply min-h-screen font-sans bg-cinema-dark text-gray-800;
   }
   #app {
     @apply min-h-screen;

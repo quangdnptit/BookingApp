@@ -1,17 +1,17 @@
 <template>
   <div class="p-8">
     <div class="mb-8">
-      <h1 class="font-display font-bold text-2xl text-zinc-100">Seats</h1>
+      <h1 class="font-display font-bold text-2xl text-gray-800">Seats</h1>
       <p class="text-cinema-muted mt-1">Manage seats per screen</p>
     </div>
 
     <div v-if="loading" class="text-cinema-muted">Loading theaters...</div>
     <template v-else>
       <Card class="mb-6">
-        <label class="block text-sm font-medium text-zinc-300 mb-2">Screen</label>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Screen</label>
         <select
           v-model="screenId"
-          class="w-full max-w-md px-3 py-2 rounded-lg bg-cinema-dark border border-cinema-border text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cinema-gold/50"
+          class="w-full max-w-md px-3 py-2 rounded-lg bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
         >
           <option value="">Select a screen</option>
           <option v-for="{ screen, theater } in screens" :key="screen.id" :value="screen.id">
@@ -44,9 +44,9 @@
                 id="newActive"
                 v-model="form.isActive"
                 type="checkbox"
-                class="rounded border-cinema-border bg-cinema-dark text-cinema-gold"
+                class="rounded border-cinema-border text-cinema-gold focus:ring-cinema-gold"
               />
-              <label for="newActive" class="text-sm text-zinc-300">Active</label>
+              <label for="newActive" class="text-sm text-gray-700">Active</label>
             </div>
             <Button type="submit" :loading="saving">Add seat</Button>
           </form>
@@ -59,7 +59,7 @@
             No seats yet. Add seats above.
           </div>
           <div v-else class="overflow-x-auto">
-            <div class="inline-block p-4 bg-cinema-dark rounded-lg">
+            <div class="inline-block p-4 bg-cinema-surface rounded-lg border border-cinema-border">
               <div class="flex gap-0.5 mb-2">
                 <span class="w-6 text-xs text-cinema-muted" />
                 <span
@@ -76,7 +76,7 @@
                   <template v-for="num in maxCol" :key="`${row}-${num}`">
                     <span
                       v-if="!seatMap.get(`${row}-${num}`)"
-                      class="w-7 h-7 rounded bg-cinema-border/30"
+                      class="w-7 h-7 rounded bg-gray-200"
                     />
                     <span
                       v-else
@@ -94,9 +94,9 @@
               </div>
             </div>
             <div class="flex gap-4 mt-4 text-xs text-cinema-muted">
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-zinc-600" /> STANDARD</span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-cinema-gold/80" /> PREMIUM</span>
-              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-sky-600" /> WHELLCHAIR</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-gray-400" /> Standard</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-cinema-gold" /> Premium</span>
+              <span class="flex items-center gap-1"><span class="w-4 h-4 rounded bg-sky-500" /> Wheelchair</span>
             </div>
           </div>
         </Card>
@@ -107,7 +107,7 @@
           <template v-else>
             <div class="overflow-x-auto rounded-lg border border-cinema-border">
               <table class="w-full text-sm text-left">
-                <thead class="bg-cinema-panel text-cinema-muted uppercase text-xs">
+                <thead class="bg-cinema-surface text-cinema-muted uppercase text-xs">
                   <tr>
                     <th class="px-4 py-3 font-medium">Row</th>
                     <th class="px-4 py-3 font-medium">Number</th>
@@ -120,7 +120,7 @@
                   <tr
                     v-for="seat in seats"
                     :key="seat.id"
-                    class="bg-cinema-dark hover:bg-cinema-panel/80 transition-colors"
+                    class="bg-cinema-panel hover:bg-cinema-surface/80 transition-colors"
                   >
                     <td class="px-4 py-3 font-medium">{{ seat.row }}</td>
                     <td class="px-4 py-3">{{ seat.seatNumber }}</td>
@@ -145,14 +145,14 @@
                         v-if="editingId === seat.id"
                         type="checkbox"
                         :checked="seat.isActive"
-                        class="rounded border-cinema-border bg-cinema-dark text-cinema-gold"
+                        class="rounded border-cinema-border text-cinema-gold focus:ring-cinema-gold"
                         @change="handleUpdateSeat(seat.id, { isActive: ($event.target as HTMLInputElement).checked })"
                       />
                       <span
                         v-else
                         :class="[
                           'inline-flex px-2 py-0.5 rounded text-xs',
-                          seat.isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-500/20 text-zinc-400',
+                          seat.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600',
                         ]"
                       >
                         {{ seat.isActive ? 'Active' : 'Inactive' }}
@@ -160,7 +160,7 @@
                     </td>
                     <td class="px-4 py-3 text-right">
                       <template v-if="editingId === seat.id">
-                        <button type="button" class="text-cinema-muted hover:text-zinc-300 text-sm" @click="editingId = null">
+                        <button type="button" class="text-cinema-muted hover:text-gray-700 text-sm" @click="editingId = null">
                           Done
                         </button>
                       </template>
@@ -168,7 +168,7 @@
                         <button type="button" class="text-cinema-gold hover:underline mr-3" @click="editingId = seat.id">
                           Edit
                         </button>
-                        <button type="button" class="text-red-400 hover:underline" @click="handleDeleteSeat(seat.id)">
+                        <button type="button" class="text-red-600 hover:underline" @click="handleDeleteSeat(seat.id)">
                           Delete
                         </button>
                       </template>
@@ -201,9 +201,9 @@ const SEAT_TYPE_OPTIONS = [
 ]
 
 const SEAT_TYPE_STYLE: Record<Seat['type'], string> = {
-  STANDARD: 'bg-zinc-600 hover:bg-zinc-500',
-  PREMIUM: 'bg-cinema-gold/80 text-cinema-dark hover:bg-cinema-gold',
-  WHEELCHAIR: 'bg-sky-600 hover:bg-sky-500',
+  STANDARD: 'bg-gray-400 text-white',
+  PREMIUM: 'bg-cinema-gold text-white',
+  WHEELCHAIR: 'bg-sky-500 text-white',
 }
 
 const theaters = ref<Theater[]>([])

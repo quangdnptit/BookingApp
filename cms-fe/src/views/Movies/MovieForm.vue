@@ -4,7 +4,7 @@
   </div>
   <div v-else class="p-8">
     <div class="mb-8">
-      <h1 class="font-display font-bold text-2xl text-zinc-100">
+      <h1 class="font-display font-bold text-2xl text-gray-800">
         {{ isEdit ? 'Edit movie' : 'Add movie' }}
       </h1>
       <p class="text-cinema-muted mt-1">
@@ -15,28 +15,28 @@
     <Card class="max-w-2xl">
       <form class="space-y-4" @submit.prevent="handleSubmit">
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Title</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
           <Input v-model="form.title" placeholder="Movie title" required />
         </div>
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Description</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
           <textarea
             v-model="form.description"
             placeholder="Short description"
             rows="3"
-            class="w-full px-3 py-2 rounded-lg bg-cinema-dark border border-cinema-border text-zinc-100 placeholder:text-cinema-muted focus:outline-none focus:ring-2 focus:ring-cinema-gold/50"
+            class="w-full px-4 py-3 rounded-xl bg-cinema-panel border border-cinema-border text-gray-800 placeholder:text-cinema-muted focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 focus:border-cinema-gold shadow-sm"
           />
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Duration (min)</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Duration (min)</label>
             <Input v-model.number="form.durationMinutes" type="number" min="1" required />
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-1">Rating</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
             <select
               v-model="form.rating"
-              class="w-full px-3 py-2 rounded-lg bg-cinema-dark border border-cinema-border text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cinema-gold/50"
+              class="w-full px-4 py-3 rounded-xl bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
             >
               <option value="G">G</option>
               <option value="PG">PG</option>
@@ -47,15 +47,15 @@
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Genre</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Genre</label>
           <Input v-model="form.genre" placeholder="e.g. Action, Drama" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Poster URL</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Poster URL</label>
           <Input v-model="form.posterUrl" placeholder="https://..." />
         </div>
         <div>
-          <label class="block text-sm font-medium text-zinc-300 mb-1">Release date</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Release date</label>
           <Input v-model="form.releaseDate" type="date" />
         </div>
         <div class="flex items-center gap-2">
@@ -63,9 +63,9 @@
             id="isActive"
             v-model="form.isActive"
             type="checkbox"
-            class="rounded border-cinema-border bg-cinema-dark text-cinema-gold focus:ring-cinema-gold"
+            class="rounded border-cinema-border text-cinema-gold focus:ring-cinema-gold"
           />
-          <label for="isActive" class="text-sm text-zinc-300">Active (visible to users)</label>
+          <label for="isActive" class="text-sm text-gray-700">Active (visible to users)</label>
         </div>
         <div class="flex gap-3 pt-4">
           <Button type="submit" :loading="saving">

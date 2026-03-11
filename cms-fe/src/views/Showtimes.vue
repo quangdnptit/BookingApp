@@ -18,7 +18,7 @@
             <select
               v-model="form.movieId"
               required
-              class="w-full px-3 py-2 rounded-lg bg-cinema-dark border border-cinema-border text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cinema-gold/50"
+              class="w-full px-3 py-2 rounded-lg bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
             >
               <option value="">Select movie</option>
               <option v-for="m in movies" :key="m.id" :value="m.id">{{ m.title }}</option>
@@ -29,7 +29,7 @@
             <select
               v-model="form.screenId"
               required
-              class="w-full px-3 py-2 rounded-lg bg-cinema-dark border border-cinema-border text-zinc-100 focus:outline-none focus:ring-2 focus:ring-cinema-gold/50"
+              class="w-full px-3 py-2 rounded-lg bg-cinema-panel border border-cinema-border text-gray-800 focus:outline-none focus:ring-2 focus:ring-cinema-gold/40 shadow-sm"
             >
               <option value="">Select room</option>
               <optgroup v-for="t in theaters" :key="t.id" :label="t.name">
@@ -81,10 +81,10 @@
               <tr
                 v-for="s in showtimes"
                 :key="s.id"
-                class="bg-cinema-dark hover:bg-cinema-panel/80 transition-colors"
+                class="bg-cinema-panel hover:bg-cinema-surface/80 transition-colors"
               >
                 <td class="px-4 py-3">
-                  <div class="font-medium text-zinc-100">{{ s.movie?.title ?? s.movieId }}</div>
+                  <div class="font-medium text-gray-800">{{ s.movie?.title ?? s.movieId }}</div>
                 </td>
                 <td class="px-4 py-3 text-cinema-muted">
                   {{ s.theater?.name ?? s.theaterId }} / {{ s.screen?.name ?? s.screenId }}

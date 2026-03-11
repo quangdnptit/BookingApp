@@ -45,8 +45,8 @@
             </thead>
             <tbody class="divide-y divide-cinema-border">
               <template v-for="t in theaters" :key="t.id">
-                <tr class="bg-cinema-dark hover:bg-cinema-panel/80 transition-colors">
-                  <td class="px-4 py-3 font-medium text-zinc-100">{{ t.name }}</td>
+                <tr class="bg-cinema-panel hover:bg-cinema-surface/80 transition-colors">
+                  <td class="px-4 py-3 font-medium text-gray-800">{{ t.name }}</td>
                   <td class="px-4 py-3 text-cinema-muted">{{ t.address }}</td>
                   <td class="px-4 py-3">{{ t.screenCount }}</td>
                   <td class="px-4 py-3">{{ t.screens.reduce((sum, s) => sum + s.capacity, 0) }}</td>
@@ -54,7 +54,7 @@
                     <span
                       :class="[
                         'inline-flex px-2 py-0.5 rounded text-xs font-medium',
-                        t.isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-500/20 text-zinc-400',
+                        t.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600',
                       ]"
                     >
                       {{ t.isActive ? 'Active' : 'Inactive' }}
@@ -78,14 +78,14 @@
                   </td>
                 </tr>
                 <!-- Rooms for this theater -->
-                <tr v-if="t.screens.length" class="bg-cinema-panel/50">
+                <tr v-if="t.screens.length" class="bg-cinema-surface/60">
                   <td colspan="6" class="px-4 py-2">
                     <div class="text-cinema-muted text-xs font-medium mb-1">Rooms</div>
                     <div class="flex flex-wrap gap-2">
                       <span
                         v-for="s in t.screens"
                         :key="s.id"
-                        class="inline-flex items-center gap-1 px-2 py-1 rounded bg-cinema-border/50 text-zinc-300 text-xs"
+                        class="inline-flex items-center gap-1 px-2 py-1 rounded bg-cinema-surface text-gray-600 text-xs"
                       >
                         {{ s.name }} ({{ s.capacity }} seats)
                         <button
@@ -100,7 +100,7 @@
                   </td>
                 </tr>
                 <!-- Add room form for this theater -->
-                <tr v-if="addingRoomFor?.id === t.id" class="bg-cinema-panel/50">
+                <tr v-if="addingRoomFor?.id === t.id" class="bg-cinema-surface/60">
                   <td colspan="6" class="px-4 py-3">
                     <form class="flex flex-wrap items-end gap-4" @submit.prevent="handleCreateRoom">
                       <div class="w-48">

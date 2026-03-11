@@ -1,49 +1,66 @@
 <template>
   <div v-if="isLoading" class="min-h-screen flex items-center justify-center bg-cinema-dark">
-    <div class="w-8 h-8 border-2 border-cinema-gold border-t-transparent rounded-full animate-spin" />
+    <div class="relative w-12 h-12">
+      <div class="absolute inset-0 rounded-full border-r-[3px] border-t-[3px] border-cinema-gold animate-spin" />
+      <div class="absolute inset-1.5 rounded-full border-l-[3px] border-b-[3px] border-cinema-gold/30 animate-spin-reverse" />
+    </div>
   </div>
-  <div v-else class="min-h-screen flex items-center justify-center bg-cinema-dark px-4">
-    <div class="w-full max-w-sm">
-      <div class="text-center mb-8">
-        <h1 class="font-display font-bold text-3xl text-cinema-gold">Movie CMS</h1>
-        <p class="text-cinema-muted mt-1">Movie Booking — Sign in</p>
+  <div v-else class="min-h-screen flex items-center justify-center bg-cinema-dark px-4 relative overflow-hidden">
+    <!-- Subtle background effect -->
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-400/20 blur-[120px] rounded-full pointer-events-none" />
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-400/10 blur-[120px] rounded-full pointer-events-none" />
+    
+    <div class="w-full max-w-md relative z-10 w-full animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <div class="text-center mb-10">
+        <h1 class="font-display font-black text-4xl text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-amber-500 mb-2 tracking-tight drop-shadow-sm">Movie CMS</h1>
+        <p class="text-gray-500 font-medium">Manage your cinematic world</p>
       </div>
-      <form
-        class="p-6 rounded-xl bg-cinema-panel border border-cinema-border shadow-xl space-y-4"
-        @submit.prevent="handleSubmit"
-      >
-        <div
-          v-if="error"
-          class="px-3 py-2 rounded-lg bg-red-500/15 border border-red-500/30 text-red-400 text-sm"
-          role="alert"
+      
+      <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-cinema-gold/40 to-amber-500/40 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+        <form
+          class="relative p-8 rounded-2xl bg-cinema-panel backdrop-blur-xl border border-cinema-border shadow-xl space-y-6"
+          @submit.prevent="handleSubmit"
         >
-          {{ error }}
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-zinc-300 mb-1.5">Email</label>
-          <Input
-            id="email"
-            v-model="email"
-            type="email"
-            placeholder="admin@reel.com"
-            autocomplete="email"
-            required
-          />
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-zinc-300 mb-1.5">Password</label>
-          <Input
-            id="password"
-            v-model="password"
-            type="password"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            required
-          />
-        </div>
-        <Button type="submit" class="w-full" :loading="loading" :disabled="loading">Sign in</Button>
-      </form>
-      <p class="text-center text-cinema-muted text-xs mt-4">Demo: admin@reel.com / password</p>
+          <div
+            v-if="error"
+            class="px-4 py-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm flex items-center gap-2 animate-in fade-in slide-in-from-top-2"
+            role="alert"
+          >
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            {{ error }}
+          </div>
+          <div class="space-y-4">
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700 mb-2 ml-1">Email address</label>
+              <Input
+                id="email"
+                v-model="email"
+                type="email"
+                placeholder="admin@reel.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <div>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2 ml-1">Password</label>
+              <Input
+                id="password"
+                v-model="password"
+                type="password"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+          </div>
+          <Button type="submit" class="w-full h-12 text-base font-semibold shadow-lg shadow-amber-500/10" :loading="loading" :disabled="loading">
+            Sign in to dashboard
+          </Button>
+        </form>
+      </div>
+      
+      <p class="text-center text-gray-400 text-sm mt-8">Demo access: admin@reel.com / password</p>
     </div>
   </div>
 </template>

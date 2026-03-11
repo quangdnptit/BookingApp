@@ -1,3 +1,5 @@
+import { useToast } from '../composables/useToast'
+
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
 
 let authToken: string | null = null
@@ -58,6 +60,11 @@ async function request<T>(
         : typeof body === 'string'
           ? body
           : `Request failed with status ${res.status}`
+          
+    // Trigger global error toast
+    const { showError } = useToast()
+    showError(message)
+    
     throw new ApiError(message, res.status, body)
   }
   return body as T

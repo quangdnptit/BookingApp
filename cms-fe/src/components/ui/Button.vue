@@ -3,7 +3,7 @@
     :type="props.type"
     :disabled="props.disabled || props.loading"
     :class="[
-      'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cinema-dark disabled:opacity-50 disabled:cursor-not-allowed',
+      'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-cinema-panel disabled:opacity-50 disabled:cursor-not-allowed',
       variants[props.variant],
       $attrs.class,
     ]"
@@ -32,9 +32,13 @@ const props = withDefaults(
 )
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-cinema-gold text-cinema-dark hover:bg-cinema-gold/90 focus:ring-cinema-gold/50',
-  secondary: 'bg-cinema-panel border border-cinema-border text-zinc-200 hover:bg-cinema-border',
-  danger: 'bg-red-600/90 text-white hover:bg-red-600 focus:ring-red-500/50',
-  ghost: 'text-zinc-400 hover:bg-cinema-border hover:text-zinc-200',
+  primary:
+    'bg-cinema-gold text-white shadow-sm hover:bg-cinema-goldDim focus:ring-cinema-gold/50 active:scale-[0.98] transition-all duration-200',
+  secondary:
+    'bg-cinema-surface border border-cinema-border text-gray-700 hover:bg-cinema-border/50 focus:ring-gray-400/50 transition-all duration-200',
+  danger:
+    'bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 focus:ring-red-400/50 transition-all duration-200',
+  ghost:
+    'text-cinema-muted hover:bg-cinema-surface hover:text-gray-800 transition-colors duration-200',
 }
 </script>

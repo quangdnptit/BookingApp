@@ -1,9 +1,9 @@
 <template>
-  <div class="p-8">
+  <div class="p-8 max-w-7xl mx-auto">
     <div class="mb-8 flex items-center justify-between">
       <div>
-        <h1 class="font-display font-bold text-2xl text-zinc-100">Movies</h1>
-        <p class="text-cinema-muted mt-1">Manage movie catalog</p>
+        <h1 class="font-display font-bold text-2xl text-gray-800">Movies</h1>
+        <p class="text-cinema-muted mt-1">Manage your movie catalog</p>
       </div>
       <router-link to="/movies/new">
         <Button>Add movie</Button>
@@ -12,11 +12,13 @@
 
     <Card>
       <CardHeader title="All movies" :subtitle="`${movies.length} movie(s)`" />
-      <div v-if="loading" class="py-12 text-center text-cinema-muted">Loading...</div>
+      <div v-if="loading" class="py-12 flex justify-center">
+        <div class="w-8 h-8 border-2 border-cinema-gold border-t-transparent rounded-full animate-spin" />
+      </div>
       <template v-else>
         <div class="overflow-x-auto rounded-lg border border-cinema-border">
           <table class="w-full text-sm text-left">
-            <thead class="bg-cinema-panel text-cinema-muted uppercase text-xs">
+            <thead class="bg-cinema-surface text-cinema-muted uppercase text-xs">
               <tr>
                 <th class="px-4 py-3 font-medium">Poster</th>
                 <th class="px-4 py-3 font-medium">Title</th>
@@ -24,37 +26,37 @@
                 <th class="px-4 py-3 font-medium">Duration</th>
                 <th class="px-4 py-3 font-medium">Rating</th>
                 <th class="px-4 py-3 font-medium">Status</th>
-                <th class="px-4 py-3 font-medium text-right">Actions</th>
+                <th class="px-4 py-3 text-right font-medium">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-cinema-border">
               <tr
                 v-for="m in movies"
                 :key="m.id"
-                class="bg-cinema-dark hover:bg-cinema-panel/80 transition-colors"
+                class="bg-cinema-panel hover:bg-cinema-surface/80 transition-colors"
               >
                 <td class="px-4 py-3">
-                  <img :src="m.posterUrl" alt="" class="w-12 h-18 object-cover rounded" />
+                  <img :src="m.posterUrl" alt="" class="w-12 h-18 object-cover rounded shadow-sm" />
                 </td>
-                <td class="px-4 py-3 font-medium text-zinc-100">{{ m.title }}</td>
+                <td class="px-4 py-3 font-medium text-gray-800">{{ m.title }}</td>
                 <td class="px-4 py-3 text-cinema-muted">{{ m.genre }}</td>
-                <td class="px-4 py-3">{{ m.durationMinutes }} min</td>
-                <td class="px-4 py-3">{{ m.rating }}</td>
+                <td class="px-4 py-3 text-cinema-muted">{{ m.durationMinutes }} min</td>
+                <td class="px-4 py-3 text-cinema-muted">{{ m.rating }}</td>
                 <td class="px-4 py-3">
                   <span
                     :class="[
                       'inline-flex px-2 py-0.5 rounded text-xs font-medium',
-                      m.isActive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-500/20 text-zinc-400',
+                      m.isActive ? 'bg-emerald-100 text-emerald-700' : 'bg-gray-100 text-gray-600',
                     ]"
                   >
                     {{ m.isActive ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <router-link :to="`/movies/${m.id}/edit`" class="text-cinema-gold hover:underline mr-3">
+                  <router-link :to="`/movies/${m.id}/edit`" class="text-cinema-gold hover:underline font-medium mr-3">
                     Edit
                   </router-link>
-                  <button type="button" class="text-red-400 hover:underline" @click="handleDelete(m.id, m.title)">
+                  <button type="button" class="text-red-600 hover:underline font-medium" @click="handleDelete(m.id, m.title)">
                     Delete
                   </button>
                 </td>

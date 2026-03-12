@@ -284,19 +284,6 @@ export const api = {
     }
   },
 
-  async updateRoom(id: string, data: { name?: string; totalSeats?: number; theaterId?: string }): Promise<Screen | null> {
-    try {
-      const existing = await http.get<BackendRoom>(`/api/rooms/${id}`)
-      const b = await http.put<BackendRoom>(`/api/rooms/${id}`, {
-        name: data.name ?? existing.name,
-        totalSeats: data.totalSeats ?? existing.totalSeats,
-      })
-      return { id: b.id, name: b.name, capacity: b.totalSeats ?? 0, theaterId: data.theaterId ?? '' }
-    } catch {
-      return null
-    }
-  },
-
   async deleteRoom(id: string): Promise<boolean> {
     try {
       await http.delete(`/api/rooms/${id}`)
@@ -359,14 +346,6 @@ export const api = {
     }
   },
 
-  async getSeats(): Promise<Seat[]> {
-    const list = await http.get<BackendSeat[]>('/api/seats')
-    const seats = Array.isArray(list) ? list : []
-    const theaters = await this.getTheaters()
-    const allScreens = theaters.flatMap((t) => t.screens)
-    return seats.map((s) => mapSeat(s, allScreens.find((sc) => sc.id === (s.roomId ?? ''))))
-  },
-
   async getSeatsByScreen(screenId: string): Promise<Seat[]> {
     const list = await http.get<BackendSeat[]>(`/api/seats/room/${screenId}`)
     const seats = Array.isArray(list) ? list : []
@@ -375,17 +354,6 @@ export const api = {
     return seats
       .map((s) => mapSeat(s, screen, screenId))
       .sort((a, b) => a.row.localeCompare(b.row) || a.seatNumber - b.seatNumber)
-  },
-
-  async createSeat(data: Omit<Seat, 'id'>): Promise<Seat> {
-    const b = await http.post<BackendSeat>('/api/seats', {
-      roomId: data.screenId,
-      seatRow: data.row,
-      seatNumber: data.seatNumber,
-      seatType: data.type,
-      isActive: data.isActive,
-    })
-    return mapSeat(b)
   },
 
   async updateSeat(id: string, data: Partial<Seat>): Promise<Seat | null> {

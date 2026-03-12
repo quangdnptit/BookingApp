@@ -51,6 +51,7 @@ interface BackendSeat {
   seatRow: string
   seatNumber: number
   seatType: string
+  isActive?: boolean
   createdAt?: string
   roomId?: string
 }
@@ -64,7 +65,6 @@ function mapMovie(b: BackendMovie): Movie {
     rating: b.ageRating ?? 'PG-13',
     genre: b.genre ?? '',
     posterUrl: b.posterUrl ?? '',
-    releaseDate: '',
     isActive: true,
     createdAt: b.createdAt ?? '',
   }
@@ -128,7 +128,7 @@ function mapSeat(
     row: b.seatRow ?? '',
     seatNumber: b.seatNumber ?? 0,
     type: (b.seatType as Seat['type']) ?? 'standard',
-    isActive: true,
+    isActive: b.isActive ?? true,
     screen,
   }
 }
@@ -383,6 +383,7 @@ export const api = {
       seatRow: data.row,
       seatNumber: data.seatNumber,
       seatType: data.type,
+      isActive: data.isActive,
     })
     return mapSeat(b)
   },
@@ -393,6 +394,7 @@ export const api = {
         seatRow: data.row,
         seatNumber: data.seatNumber,
         seatType: data.type,
+        isActive: data.isActive,
       })
       return mapSeat(b)
     } catch {

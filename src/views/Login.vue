@@ -37,7 +37,7 @@
                 id="email"
                 v-model="email"
                 type="email"
-                placeholder="admin@reel.com"
+                placeholder="admin@cms.com"
                 autocomplete="email"
                 required
               />

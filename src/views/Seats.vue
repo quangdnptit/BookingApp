@@ -74,9 +74,9 @@
           <CardHeader title="All seats (table)" subtitle="Edit seat type or remove seat" />
           <div v-if="seatsLoading" class="py-8 text-center text-cinema-muted">Loading...</div>
           <template v-else>
-            <div class="overflow-x-auto rounded-lg border border-cinema-border">
-              <table class="w-full text-sm text-left">
-                <thead class="bg-cinema-surface text-cinema-muted uppercase text-xs">
+            <div class="overflow-y-auto max-h-96 rounded-lg border border-cinema-border">
+              <table class="text-sm text-left">
+                <thead class="bg-cinema-surface text-cinema-muted uppercase text-xs sticky top-0">
                   <tr>
                     <th class="px-4 py-3 font-medium">Row</th>
                     <th class="px-4 py-3 font-medium">Number</th>

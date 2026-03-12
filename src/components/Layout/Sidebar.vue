@@ -20,7 +20,7 @@
     </nav>
     <div class="p-3 border-t border-cinema-border space-y-2">
       <p v-if="user" class="px-3 py-1.5 text-cinema-muted text-sm truncate" :title="user.email">
-        {{ user.name }}
+        Hello, {{ user.name }}
       </p>
       <Button variant="ghost" class="w-full justify-start" @click="handleLogout">Sign out</Button>
     </div>

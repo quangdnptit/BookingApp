@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="ALL" />
+    <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d594cdaa-7e17-4268-82f1-a8b20913e2ed" name="Changes" comment="Feat: init commit">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/BookingApp.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/build.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/settings.gradle" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/src/main/java/com/demo/booking_cms/BookingCmsApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/src/main/resources/application.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/src/main/resources/db/migration/V1__init_movie_booking_schema.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/booking-cms/src/test/java/com/demo/booking_cms/BookingCmsApplicationTests.java" beforeDir="false" />
+    <list default="true" id="2b9e5157-9392-4b33-ac1a-0f39e3c75148" name="Changes" comment="integrate with CMS APIs">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/.env.example" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/eslint.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/postcss.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/public/vite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/App.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/api/client.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/api/http.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/api/mockData.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/Layout/Layout.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/Layout/Sidebar.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/Button.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/Card.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/CardHeader.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/Input.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/Select.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/Table.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/components/ui/ToastContainer.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/composables/useAuth.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/composables/useToast.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/env.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/main.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/router/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/types/index.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Dashboard.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Login.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Movies/MovieForm.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Movies/MovieList.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Seats.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Showtimes.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/src/views/Theaters.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/tailwind.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/tsconfig.app.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/tsconfig.node.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cms-fe/vite.config.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,70 +57,66 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 3
+  &quot;associatedIndex&quot;: 5
 }</component>
-  <component name="ProjectId" id="3AkswgxX28hxGgYeSBlNI3z9iEV" />
+  <component name="ProjectId" id="3AlCCuO5sLyZSqeuQExQgGVHWBY" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/quang/OneDrive/Desktop/BookingApp&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/quang/OneDrive/Desktop/BookingApp/booking-cms/src/Main.java&quot;,
-    &quot;settings.build.tools.auto.reload&quot;: &quot;ALL&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "javascript.preferred.runtime.type.id": "node",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/quang/OneDrive/Desktop/cms-booking-fe",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Users\\quang\\OneDrive\\Desktop\\cms-booking-fe\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager">
-    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="17" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <module name="BookingApp" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/booking-cms" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.31033.133" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d594cdaa-7e17-4268-82f1-a8b20913e2ed" name="Changes" comment="" />
-      <created>1773148142524</created>
+      <changelist id="2b9e5157-9392-4b33-ac1a-0f39e3c75148" name="Changes" comment="" />
+      <created>1773157645679</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1773148142524</updated>
+      <updated>1773157645679</updated>
+      <workItem from="1773304117864" duration="95000" />
+      <workItem from="1773304354831" duration="659000" />
     </task>
-    <task id="LOCAL-00001" summary="Feat: init commit">
+    <task id="LOCAL-00001" summary="integrate with CMS APIs">
       <option name="closed" value="true" />
-      <created>1773150620561</created>
+      <created>1773160493121</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1773150620561</updated>
+      <updated>1773160493121</updated>
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="Feat: init commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: init commit" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/booking-cms/src/Main.java</url>
-          <line>11</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.ts" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="integrate with CMS APIs" />
+    <option name="LAST_COMMIT_MESSAGE" value="integrate with CMS APIs" />
   </component>
 </project>

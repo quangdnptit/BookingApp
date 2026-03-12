@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2b9e5157-9392-4b33-ac1a-0f39e3c75148" name="Changes" comment="integrate with CMS APIs">
+    <list default="true" id="2b9e5157-9392-4b33-ac1a-0f39e3c75148" name="Changes" comment="refactor seats layout">
+      <change afterPath="$PROJECT_DIR$/src/components/AddressMapPicker.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Layout/Layout.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Layout/Layout.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Seats.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Seats.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/Theaters.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Theaters.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +60,8 @@
       <updated>1773157645679</updated>
       <workItem from="1773304117864" duration="95000" />
       <workItem from="1773304354831" duration="1515000" />
-      <workItem from="1773307379206" duration="3386000" />
+      <workItem from="1773307379206" duration="3434000" />
+      <workItem from="1773322436519" duration="3127000" />
     </task>
     <task id="LOCAL-00001" summary="integrate with CMS APIs">
       <option name="closed" value="true" />
@@ -69,7 +71,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773160493121</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor seats layout">
+      <option name="closed" value="true" />
+      <created>1773312223947</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1773312223947</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -79,7 +89,9 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.ts" />
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="move folder structure" />
     <MESSAGE value="integrate with CMS APIs" />
-    <option name="LAST_COMMIT_MESSAGE" value="integrate with CMS APIs" />
+    <MESSAGE value="refactor seats layout" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor seats layout" />
   </component>
 </project>

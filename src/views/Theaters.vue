@@ -19,6 +19,13 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Address / Location</label>
           <Input v-model="theaterForm.address" placeholder="Address or location" required />
+          <p class="mt-1 text-xs text-cinema-muted">This address is shown to customers.</p>
+          <details class="mt-2">
+            <summary class="cursor-pointer text-sm text-cinema-gold hover:underline">Pick from map</summary>
+            <div class="mt-2">
+              <AddressMapPicker @pick="theaterForm.address = $event" />
+            </div>
+          </details>
         </div>
         <div class="flex gap-3">
           <Button type="submit" :loading="savingTheater">Create theater</Button>
@@ -38,6 +45,13 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Address / Location</label>
           <Input v-model="theaterEditForm.address" placeholder="Address or location" required />
+          <p class="mt-1 text-xs text-cinema-muted">This address is shown to customers.</p>
+          <details class="mt-2">
+            <summary class="cursor-pointer text-sm text-cinema-gold hover:underline">Pick from map</summary>
+            <div class="mt-2">
+              <AddressMapPicker @pick="theaterEditForm.address = $event" />
+            </div>
+          </details>
         </div>
         <div class="flex gap-3">
           <Button type="submit" :loading="savingTheaterEdit">Save changes</Button>
@@ -167,6 +181,7 @@ import Card from '../components/ui/Card.vue'
 import CardHeader from '../components/ui/CardHeader.vue'
 import Button from '../components/ui/Button.vue'
 import Input from '../components/ui/Input.vue'
+import AddressMapPicker from '../components/AddressMapPicker.vue'
 
 const theaters = ref<Theater[]>([])
 const loading = ref(true)

@@ -41,6 +41,7 @@ interface BackendShowtime {
   startTime: string
   endTime: string
   basePrice: number
+  isPublished?: boolean
   createdAt?: string
   movieId?: string
   roomId?: string
@@ -110,7 +111,7 @@ function mapShowtime(b: BackendShowtime, movies?: Movie[], theaters?: Theater[])
     endTime: b.endTime,
     price: b.basePrice ?? 0,
     currency: 'USD',
-    isActive: true,
+    isPublished: b.isPublished ?? true,
     movie: movies?.find((m) => m.id === movieId),
     screen,
     theater,
@@ -310,13 +311,22 @@ export const api = {
       startTime: data.startTime,
       endTime: data.endTime,
       basePrice: data.price,
+      isPublished: data.isPublished,
     })
-    return mapShowtime(b)
+    const mapped = mapShowtime(b)
+    return { ...mapped, isPublished: b.isPublished !== undefined ? b.isPublished : data.isPublished }
   },
 
   async updateShowtime(
     id: string,
-    data: { movieId?: string; screenId?: string; startTime?: string; endTime?: string; price?: number }
+    data: {
+      movieId?: string
+      screenId?: string
+      startTime?: string
+      endTime?: string
+      price?: number
+      isPublished?: boolean
+    }
   ): Promise<Showtime | null> {
     try {
       const [existing, movies, theaters] = await Promise.all([
@@ -324,14 +334,18 @@ export const api = {
         this.getMovies(),
         this.getTheaters(),
       ])
+      const mergedPublished =
+        data.isPublished !== undefined ? data.isPublished : (existing.isPublished ?? true)
       const b = await http.put<BackendShowtime>(`/api/showtimes/${id}`, {
         movieId: data.movieId ?? existing.movieId,
         roomId: data.screenId ?? existing.roomId,
         startTime: data.startTime ?? existing.startTime,
         endTime: data.endTime ?? existing.endTime,
         basePrice: data.price ?? existing.basePrice,
+        isPublished: mergedPublished,
       })
-      return mapShowtime(b, movies, theaters)
+      const mapped = mapShowtime(b, movies, theaters)
+      return { ...mapped, isPublished: b.isPublished !== undefined ? b.isPublished : mergedPublished }
     } catch {
       return null
     }

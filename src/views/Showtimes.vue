@@ -54,8 +54,11 @@
             <Input v-model.number="form.price" type="number" min="0" step="0.01" required />
           </div>
         </div>
+        <p class="text-sm text-cinema-muted">
+          New showtimes are saved as <strong class="text-amber-700">draft</strong>. Publish from the list when customers should see them.
+        </p>
         <div class="flex gap-3">
-          <Button type="submit" :loading="saving">Create showtime</Button>
+          <Button type="submit" :loading="saving">Create showtime (draft)</Button>
           <Button type="button" variant="secondary" @click="showForm = false">Cancel</Button>
         </div>
       </form>
@@ -127,6 +130,7 @@
                 <th class="px-4 py-3 font-medium">Start</th>
                 <th class="px-4 py-3 font-medium">End</th>
                 <th class="px-4 py-3 font-medium">Base Price</th>
+                <th class="px-4 py-3 font-medium">Status</th>
                 <th class="px-4 py-3 font-medium text-right">Actions</th>
               </tr>
             </thead>
@@ -145,7 +149,35 @@
                 <td class="px-4 py-3">{{ formatDateTime(s.startTime) }}</td>
                 <td class="px-4 py-3">{{ formatDateTime(s.endTime) }}</td>
                 <td class="px-4 py-3">{{ s.currency }} {{ s.price.toFixed(2) }}</td>
-                <td class="px-4 py-3 text-right">
+                <td class="px-4 py-3">
+                  <span
+                    :class="[
+                      'inline-flex px-2 py-0.5 rounded text-xs font-medium',
+                      s.isPublished ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800',
+                    ]"
+                  >
+                    {{ s.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <button
+                    v-if="!s.isPublished"
+                    type="button"
+                    class="text-emerald-700 hover:underline mr-3 font-medium"
+                    :disabled="publishingId === s.id"
+                    @click="handlePublish(s)"
+                  >
+                    {{ publishingId === s.id ? 'Publishing…' : 'Publish' }}
+                  </button>
+                  <button
+                    v-else
+                    type="button"
+                    class="text-cinema-muted hover:underline mr-3 text-sm"
+                    :disabled="publishingId === s.id"
+                    @click="handleUnpublish(s)"
+                  >
+                    Unpublish
+                  </button>
                   <button type="button" class="text-cinema-gold hover:underline mr-3" @click="openEditShowtime(s)">
                     Edit
                   </button>
@@ -186,6 +218,7 @@ const showForm = ref(false)
 const saving = ref(false)
 const editingShowtimeId = ref<string | null>(null)
 const savingEdit = ref(false)
+const publishingId = ref<string | null>(null)
 
 const form = reactive({
   movieId: '',
@@ -237,7 +270,7 @@ async function handleCreateShowtime() {
       endTime: form.endTime ? new Date(form.endTime).toISOString() : '',
       price: form.price,
       currency: 'USD',
-      isActive: true,
+      isPublished: false,
     })
     form.movieId = ''
     form.screenId = ''
@@ -285,5 +318,48 @@ async function handleDelete(id: string) {
   if (!confirm('Delete this showtime?')) return
   const ok = await api.deleteShowtime(id)
   if (ok) showtimes.value = showtimes.value.filter((s) => s.id !== id)
+}
+
+async function handlePublish(s: Showtime) {
+  const title = s.movie?.title ?? s.movieId
+  const when = formatDateTime(s.startTime)
+  if (
+    !confirm(
+      `Publish this showtime?\n\n${title}\n${when}\n\nCustomers will be able to see and book this screening.`
+    )
+  )
+    return
+  publishingId.value = s.id
+  try {
+    const updated = await api.updateShowtime(s.id, { isPublished: true })
+    if (updated) {
+      showtimes.value = showtimes.value.map((row) => (row.id === s.id ? updated : row))
+    } else {
+      await load()
+    }
+  } finally {
+    publishingId.value = null
+  }
+}
+
+async function handleUnpublish(s: Showtime) {
+  const title = s.movie?.title ?? s.movieId
+  if (
+    !confirm(
+      `Unpublish this showtime?\n\n${title}\n\nIt will no longer be visible to customers until you publish again.`
+    )
+  )
+    return
+  publishingId.value = s.id
+  try {
+    const updated = await api.updateShowtime(s.id, { isPublished: false })
+    if (updated) {
+      showtimes.value = showtimes.value.map((row) => (row.id === s.id ? updated : row))
+    } else {
+      await load()
+    }
+  } finally {
+    publishingId.value = null
+  }
 }
 </script>

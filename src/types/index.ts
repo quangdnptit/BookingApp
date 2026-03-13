@@ -47,7 +47,7 @@ export interface Showtime {
   endTime: string
   price: number
   currency: string
-  isActive: boolean
+  isPublished: boolean
   movie?: Movie
   screen?: Screen
   theater?: Theater

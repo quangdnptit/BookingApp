@@ -1,4 +1,5 @@
 import { useToast } from '../composables/useToast'
+import router from '../router'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080'
 
@@ -53,18 +54,22 @@ async function request<T>(
     body = await res.text()
   }
   if (!res.ok) {
-    if (res.status === 401) setAuthToken(null)
+    if (res.status === 401) {
+      setAuthToken(null)
+      localStorage.removeItem('reel-cms-auth')
+      router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
+    }
     const message =
       typeof body === 'object' && body !== null && 'message' in body
         ? String((body as { message: unknown }).message)
         : typeof body === 'string'
           ? body
           : `Request failed with status ${res.status}`
-          
-    // Trigger global error toast
-    const { showError } = useToast()
-    showError(message)
-    
+
+    if (res.status !== 401) {
+      const { showError } = useToast()
+      showError(message)
+    }
     throw new ApiError(message, res.status, body)
   }
   return body as T

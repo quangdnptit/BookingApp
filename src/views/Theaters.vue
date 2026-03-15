@@ -49,7 +49,7 @@
           <details class="mt-2">
             <summary class="cursor-pointer text-sm text-cinema-gold hover:underline">Pick from map</summary>
             <div class="mt-2">
-              <AddressMapPicker @pick="theaterEditForm.address = $event" />
+              <AddressMapPicker :initial-address="theaterEditForm.address" @pick="theaterEditForm.address = $event" />
             </div>
           </details>
         </div>

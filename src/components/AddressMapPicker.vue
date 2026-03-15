@@ -21,16 +21,34 @@
     <p class="mt-2 text-xs text-cinema-muted">Search by text above or click on the map to pick an address. The address will be filled above.</p>
     <p v-if="loading" class="mt-1 text-xs text-cinema-gold">Resolving address...</p>
     <p v-if="error" class="mt-1 text-xs text-red-600">{{ error }}</p>
+    <p v-if="error && searchQuery.trim()" class="mt-2">
+      <a
+        :href="googleMapsSearchUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1.5 text-sm font-medium text-cinema-gold hover:underline"
+      >
+        Open in Google Maps
+      </a>
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+const props = withDefaults(
+  defineProps<{
+    /** When provided (e.g. edit mode), map opens centered on this address instead of default. */
+    initialAddress?: string
+  }>(),
+  { initialAddress: '' }
+)
+
 const mapEl = ref<HTMLElement | null>(null)
-const searchQuery = ref('')
+const searchQuery = ref(props.initialAddress)
 const loading = ref(false)
 const error = ref('')
 
@@ -39,7 +57,7 @@ const emit = defineEmits<{ 'pick': [address: string] }>()
 // Default map center: Hanoi, Vietnam
 const HN_LOCATION = { lat: 21.0285, lng: 105.8542, zoom: 12 } as const
 
-// Nominatim API (OpenStreetMap geocoding)
+// Nominatim API (OpenStreetMap geocoding) — 1 request per second max
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org'
 const NOMINATIM_HEADERS: HeadersInit = {
   Accept: 'application/json',
@@ -48,15 +66,61 @@ const NOMINATIM_HEADERS: HeadersInit = {
 const NOMINATIM_FORMAT = 'json'
 const NOMINATIM_SEARCH_LIMIT = 1
 const NOMINATIM_ZOOM_AFTER_SEARCH = 14
+const NOMINATIM_RATE_DELAY_MS = 1100
 
 // Map tiles (OpenStreetMap)
 const OSM_TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 const OSM_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 
+const googleMapsSearchUrl = computed(() => {
+  const q = searchQuery.value.trim()
+  if (!q) return '#'
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`
+})
+
+/** Nominatim allows 1 request per second; delay between retries. */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/** Single Nominatim search; returns result or null. */
+async function geocodeOne(query: string): Promise<{ lat: number; lng: number; display_name: string } | null> {
+  const params = new URLSearchParams({
+    q: query.trim().replace(/\s+/g, ' '),
+    format: NOMINATIM_FORMAT,
+    limit: String(NOMINATIM_SEARCH_LIMIT),
+  })
+  const res = await fetch(`${NOMINATIM_BASE_URL}/search?${params}`, { headers: NOMINATIM_HEADERS })
+  if (!res.ok) return null
+  const data = await res.json()
+  if (!Array.isArray(data) || data.length === 0) return null
+  const first = data[0]
+  const lat = parseFloat(first.lat)
+  const lon = parseFloat(first.lon)
+  if (Number.isNaN(lat) || Number.isNaN(lon)) return null
+  return { lat, lng: lon, display_name: first.display_name ?? `${lat}, ${lon}` }
+}
+
+/** Try several query variants; Nominatim often fails on full address but finds shorter forms. */
+async function geocode(address: string): Promise<{ lat: number; lng: number; display_name: string } | null> {
+  const raw: string[] = [address.trim()]
+  const parts = address.split(',').map((p) => p.trim()).filter(Boolean)
+  if (parts.length > 2) raw.push(parts.slice(0, 2).join(', '))
+  if (parts.length > 1) raw.push(parts[0])
+  const queries = [...new Set(raw.map((s) => s.trim()).filter(Boolean))]
+  for (let i = 0; i < queries.length; i++) {
+    if (i > 0) await delay(NOMINATIM_RATE_DELAY_MS)
+    const result = await geocodeOne(queries[i])
+    if (result) return result
+  }
+  return null
+}
+
 let map: L.Map | null = null
 let marker: L.Marker | null = null
 
 async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  await delay(NOMINATIM_RATE_DELAY_MS)
   const params = new URLSearchParams({
     lat: String(lat),
     lon: String(lng),
@@ -92,26 +156,14 @@ async function searchByText() {
   loading.value = true
   error.value = ''
   try {
-    const params = new URLSearchParams({
-      q: q,
-      format: NOMINATIM_FORMAT,
-      limit: String(NOMINATIM_SEARCH_LIMIT),
-    })
-    const url = `${NOMINATIM_BASE_URL}/search?${params}`
-    const res = await fetch(url, { headers: NOMINATIM_HEADERS })
-    if (!res.ok) throw new Error('Search failed')
-    const data = await res.json()
-    if (!data || data.length === 0) {
-      error.value = 'No results found. Try a different search or click on the map.'
-      return
+    const result = await geocode(q)
+    if (result) {
+      setMarkerAt(result.lat, result.lng)
+      if (map) map.setView([result.lat, result.lng], NOMINATIM_ZOOM_AFTER_SEARCH)
+      emit('pick', result.display_name)
+    } else {
+      error.value = 'Could not find location. Use the link below to open in Google Maps or click on the map.'
     }
-    const first = data[0]
-    const lat = parseFloat(first.lat)
-    const lon = parseFloat(first.lon)
-    const address = first.display_name ?? `${lat}, ${lon}`
-    setMarkerAt(lat, lon)
-    if (map) map.setView([lat, lon], NOMINATIM_ZOOM_AFTER_SEARCH)
-    emit('pick', address)
   } catch {
     error.value = 'Search failed. Try again or click on the map.'
   } finally {
@@ -138,11 +190,34 @@ function onMapClick(e: L.LeafletMouseEvent) {
     })
 }
 
+/** Geocode initial address and center map (used in edit mode). */
+async function loadInitialAddress() {
+  const address = (props.initialAddress ?? '').trim()
+  if (!address || !map) return
+  loading.value = true
+  error.value = ''
+  try {
+    const result = await geocode(address)
+    if (result) {
+      setMarkerAt(result.lat, result.lng)
+      map.setView([result.lat, result.lng], NOMINATIM_ZOOM_AFTER_SEARCH)
+    }
+  } catch {
+    // keep default (Hanoi) view
+  } finally {
+    loading.value = false
+  }
+}
+
 onMounted(() => {
   if (!mapEl.value) return
   map = L.map(mapEl.value).setView([HN_LOCATION.lat, HN_LOCATION.lng], HN_LOCATION.zoom)
   L.tileLayer(OSM_TILE_URL, { attribution: OSM_ATTRIBUTION }).addTo(map)
   map.on('click', onMapClick)
+  if (props.initialAddress?.trim()) {
+    searchQuery.value = props.initialAddress
+    loadInitialAddress()
+  }
 })
 
 onBeforeUnmount(() => {

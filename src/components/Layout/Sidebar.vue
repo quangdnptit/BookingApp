@@ -1,8 +1,8 @@
 <template>
   <aside class="w-56 min-h-screen bg-cinema-panel border-r border-cinema-border flex flex-col shadow-sm">
     <div class="p-6 border-b border-cinema-border">
-      <h1 class="font-display font-bold text-xl text-cinema-gold">Movie CMS</h1>
-      <p class="text-cinema-muted text-sm mt-0.5">Movie Booking</p>
+      <h1 class="font-display font-bold text-xl text-cinema-gold">Galaxy Cinema</h1>
+      <p class="text-cinema-muted text-sm mt-0.5">Galaxy Cinema CMS system</p>
     </div>
     <nav class="flex-1 p-3 space-y-1">
       <router-link
